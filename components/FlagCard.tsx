@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import type { GameState } from "@/types/game"
 import type { Country } from "@/types/country"
-import { ScratchToReveal } from "@/components/ui/scratch-to-reveal"
 import Image from "next/image"
+import { ScratchToReveal } from "@/components/magicui/scratch-to-reveal";
 
 interface FlagCardProps {
   country: Country
@@ -47,8 +47,11 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
     <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
       <ScratchToReveal
         className="w-full aspect-[3/2] mb-4"
-        onReveal={() => setRevealed(true)}
         aria-label={`Scratch to reveal flag for ${country.name}`}
+        width={428}
+        height={260}
+        minScratchPercentage={70}
+        gradientColors={["#A97CF8", "#F38CB8", "#FDCC92"]}
       >
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
