@@ -47,7 +47,15 @@ export default function Game() {
     }
   }, [isFirstLoad])
 
+  useEffect(() => {
+    if (gameState !== "initial") {
+      startNewGame();
+    }
+  }, [gameMode]); 
+
   const startNewGame = useCallback(async () => {
+    console.log("Se ejecuta el startNewGame method.");
+    
     const countryCount = gameMode === "normal" ? 4 : 6
     const newCountries = await getRandomCountries(countryCount)
     setCountries(newCountries)
@@ -58,6 +66,8 @@ export default function Game() {
     setCorrectAnswers(0)
     setIncorrectAnswers(0)
     flagGridRef.current?.resetInputs()
+    console.log(flagGridRef.current);
+    
     toast.success("New game started!")
     playSound("start")
   }, [gameMode])
