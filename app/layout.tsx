@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Script from 'next/script';
+import Head from 'next/head';
 
 export const metadata: Metadata = {
   title: 'v0 App',
@@ -15,10 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <title>The Flag Game</title>
+        <meta name="google-adsense-account" content={`${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}></meta>
+      </Head>
       <body>
-      <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
-              crossOrigin="anonymous">
-      </Script>
         {children}
       </body>
     </html>
