@@ -10,7 +10,7 @@ import { ScratchToReveal } from "@/components/magicui/scratch-to-reveal";
 import { set } from "react-hook-form"
 
 interface FlagCardProps {
-  country: Country
+  country: Country,
   gameState: GameState,
   gameMode: GameMode,
   onAnswer: (countryId: number, answer: string) => boolean // Modified return type
@@ -22,6 +22,8 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
   const [hint, setHint] = useState<string | null>(null)
   const [imageError, setImageError] = useState(false)
   const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null)
+  const [isRevealed, setIsRevealed] = useState<boolean>(false);
+  const [resetCounter, setResetCounter] = useState<number>(0);
   const [cardWidth, setCardWidth] = useState<number>(284);
   const refCard = useRef<HTMLDivElement>(null);
 
@@ -39,6 +41,8 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
       setRevealed(false)
       setHint(null)
       setAnswerStatus(null)
+      setIsRevealed(false)
+      setResetCounter(prev => prev + 1)
     },
   }))
 
@@ -58,12 +62,14 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
   return (
     <div className="bg-card text-card-foreground rounded-lg shadow-md p-4" ref={refCard}>
       <ScratchToReveal
-        className="w-full aspect-[3/2] mb-4 overflow-hidden"
+        key={`${country.id}-${resetCounter}`} // Add unique key to reset the gradient
+        className={`w-full aspect-[3/2] mb-4 overflow-hidden ${isRevealed ? 'pointer-events-none' : ''}`}
         aria-label={`Scratch to reveal flag for ${country.name}`}
         width={cardWidth!}
         height={260}
         minScratchPercentage={70}
-        gradientColors={["#A97CF8", "#F38CB8", "#FDCC92"]}
+        gradientColors={isRevealed ? undefined : ["#A97CF8", "#F38CB8", "#FDCC92"]}
+        onComplete={() => setIsRevealed(true)}
       >
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
