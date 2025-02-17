@@ -58,6 +58,8 @@ export default function Game() {
     setCorrectAnswers(0)
     setIncorrectAnswers(0)
     flagGridRef.current?.resetInputs()
+    console.log(flagGridRef.current);
+    
     toast.success("New game started!")
     playSound("start")
   }, [gameMode])

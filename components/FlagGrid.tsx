@@ -9,7 +9,7 @@ interface FlagGridProps {
   gameMode: GameMode
   gameState: GameState
   countries: Country[]
-  onAnswer: (countryId: number, answer: string) => void
+  onAnswer: (countryId: number, answer: string) => boolean
 }
 
 const FlagGrid = forwardRef<{ resetInputs: () => void }, FlagGridProps>(
@@ -29,10 +29,11 @@ const FlagGrid = forwardRef<{ resetInputs: () => void }, FlagGridProps>(
         {countries.map((country, index) => (
           <FlagCard
             key={country.id}
-            ref={(el) => (flagCardRefs.current[index] = el)}
+            ref={(el) => { flagCardRefs.current[index] = el }}
             country={country}
             gameState={gameState}
             onAnswer={onAnswer}
+            gameMode={gameMode}
           />
         ))}
       </div>

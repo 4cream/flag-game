@@ -1,25 +1,37 @@
 "use client"
 
-import { useState, forwardRef, useImperativeHandle } from "react"
+import { useState, forwardRef, useImperativeHandle, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import type { GameState } from "@/types/game"
+import type { GameState, GameMode } from "@/types/game"
 import type { Country } from "@/types/country"
 import Image from "next/image"
 import { ScratchToReveal } from "@/components/magicui/scratch-to-reveal";
+import { set } from "react-hook-form"
 
 interface FlagCardProps {
   country: Country
-  gameState: GameState
+  gameState: GameState,
+  gameMode: GameMode,
   onAnswer: (countryId: number, answer: string) => boolean // Modified return type
 }
 
-const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ country, gameState, onAnswer }, ref) => {
+const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ country, gameState, onAnswer, gameMode }, ref) => {
   const [answer, setAnswer] = useState("")
   const [revealed, setRevealed] = useState(false)
   const [hint, setHint] = useState<string | null>(null)
   const [imageError, setImageError] = useState(false)
   const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null)
+  const [cardWidth, setCardWidth] = useState<number>(284);
+  const refCard = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = refCard.current;
+    const elementWidth = el?.clientWidth!;
+    const summaryNum = (elementWidth - 16 * 2);
+    setCardWidth(summaryNum);
+  
+  }, [gameMode]);
 
   useImperativeHandle(ref, () => ({
     resetInput: () => {
@@ -44,11 +56,11 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
   }
 
   return (
-    <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
+    <div className="bg-card text-card-foreground rounded-lg shadow-md p-4" ref={refCard}>
       <ScratchToReveal
-        className="w-full aspect-[3/2] mb-4"
+        className="w-full aspect-[3/2] mb-4 overflow-hidden"
         aria-label={`Scratch to reveal flag for ${country.name}`}
-        width={428}
+        width={cardWidth!}
         height={260}
         minScratchPercentage={70}
         gradientColors={["#A97CF8", "#F38CB8", "#FDCC92"]}
@@ -61,8 +73,8 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
           <Image
             src={country.flag_url || "/placeholder.svg"}
             alt={`Flag of ${country.name}`}
-            width={300}
-            height={200}
+            width={428}
+            height={260}
             className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />
