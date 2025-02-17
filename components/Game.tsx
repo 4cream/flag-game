@@ -54,7 +54,6 @@ export default function Game() {
   }, [gameMode]); 
 
   const startNewGame = useCallback(async () => {
-    console.log("Se ejecuta el startNewGame method.");
     
     const countryCount = gameMode === "normal" ? 4 : 6
     const newCountries = await getRandomCountries(countryCount)
@@ -129,9 +128,9 @@ export default function Game() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
-        <div>
-          <Toaster />
+      <div className="grid gap-8 lg:grid-cols-1">
+        <div className="max-w-[900px] mx-auto w-full">
+          <Toaster richColors />
           <header className="flex flex-col sm:flex-row justify-between items-center mb-4">
             <h1 className="text-3xl font-bold mb-4 sm:mb-0">Guess the Flag</h1>
             <div className="flex items-center gap-4">
@@ -186,10 +185,10 @@ export default function Game() {
             <Achievements achievements={stats.achievements} />
           </div>
         </div>
-        <aside className="space-y-8">
+        {/* <aside className="space-y-8">
           <AdPlaceholder />
           <AdPlaceholder />
-        </aside>
+        </aside> */}
       </div>
       <InstructionsModal isOpen={isInstructionsOpen} onClose={() => setIsInstructionsOpen(false)} />
     </motion.div>
