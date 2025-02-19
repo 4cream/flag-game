@@ -1,3 +1,4 @@
+// Flag Card
 "use client"
 
 import { useState, forwardRef, useImperativeHandle, useRef, useEffect } from "react"
@@ -34,13 +35,19 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
   
   }, [gameMode]);
 
+  useEffect(() => {
+    setIsRevealed(false);
+    setResetCounter(prev => prev + 1);
+  }, [country.id]);
+
   useImperativeHandle(ref, () => ({
     resetInput: () => {
       setAnswer("");
       setHint(null);
       setAnswerStatus(null);
       setIsRevealed(false);
-      setResetCounter(prev => prev + 1);
+      // Forzar la recreación del componente ScratchToReveal
+      setResetCounter(Date.now());
     },
   }));
 
@@ -64,7 +71,7 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
       ref={refCard}
     >
       <ScratchToReveal
-        key={`${country.id}-${resetCounter}`} // Add unique key to reset the gradient
+        key={resetCounter} // Usar solo resetCounter como key
         className={`w-full aspect-[3/2] mb-4 overflow-hidden rounded-md ${isRevealed ? 'pointer-events-none' : ''}`}
         aria-label={`Scratch to reveal flag for ${country.name}`}
         width={cardWidth!}
