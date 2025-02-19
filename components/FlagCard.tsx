@@ -72,8 +72,11 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
 
   useEffect(() => {
     setIsRevealed(false);
-    setResetCounter(prev => prev + 1);
-  }, [country.id]);
+    setAnswer("");
+    setHint(null);
+    setAnswerStatus(null);
+    setResetCounter(Date.now()); // Usar Date.now() para asegurar un valor único
+  }, [country.id, gameMode]); // Agregar gameMode como dependencia
 
   useImperativeHandle(ref, () => ({
     resetInput: () => {
