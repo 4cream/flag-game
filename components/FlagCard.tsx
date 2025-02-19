@@ -1,7 +1,7 @@
 // Flag Card
 "use client"
 
-import { useState, forwardRef, useImperativeHandle, useRef, useEffect } from "react"
+import { useState, forwardRef, useImperativeHandle, useRef, useEffect, useCallback } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import type { GameState, GameMode } from "@/types/game"
@@ -24,16 +24,51 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
   const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null)
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
   const [resetCounter, setResetCounter] = useState<number>(0);
-  const [cardWidth, setCardWidth] = useState<number>(284);
+  const [dimensions, setDimensions] = useState({ width: 284, height: 260 });
   const refCard = useRef<HTMLDivElement>(null);
 
+  const updateDimensions = useCallback(() => {
+    if (!refCard.current) return;
+
+    const card = refCard.current;
+    const cardWidth = card.clientWidth - 32; // 32 = padding (16px * 2)
+    
+    // Calcular altura basada en aspect ratio 3:2
+    const aspectRatio = 3/2;
+    const cardHeight = Math.round(cardWidth / aspectRatio);
+
+    // Ajustar altura máxima para evitar cards demasiado altas en pantallas grandes
+    const maxHeight = Math.min(cardHeight, window.innerHeight * 0.4);
+
+    setDimensions({
+      width: cardWidth,
+      height: maxHeight
+    });
+  }, []);
+
   useEffect(() => {
-    const el = refCard.current;
-    const elementWidth = el?.clientWidth!;
-    const summaryNum = (elementWidth - 16 * 2);
-    setCardWidth(summaryNum);
-  
-  }, [gameMode]);
+    if (!refCard.current) return;
+
+    updateDimensions();
+
+    // Crear ResizeObserver para actualizar dimensiones cuando la card cambie de tamaño
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+    });
+
+    resizeObserver.observe(refCard.current);
+
+    // Manejar cambios de orientación en dispositivos móviles
+    const handleOrientation = () => {
+      setTimeout(updateDimensions, 100);
+    };
+    window.addEventListener('orientationchange', handleOrientation);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('orientationchange', handleOrientation);
+    };
+  }, [updateDimensions]);
 
   useEffect(() => {
     setIsRevealed(false);
@@ -71,11 +106,11 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
       ref={refCard}
     >
       <ScratchToReveal
-        key={resetCounter} // Usar solo resetCounter como key
-        className={`w-full aspect-[3/2] mb-4 overflow-hidden rounded-md ${isRevealed ? 'pointer-events-none' : ''}`}
+        key={resetCounter}
+        className={`w-full mb-4 overflow-hidden rounded-md ${isRevealed ? 'pointer-events-none' : ''}`}
         aria-label={`Scratch to reveal flag for ${country.name}`}
-        width={cardWidth!}
-        height={260}
+        width={dimensions.width}
+        height={dimensions.height}
         minScratchPercentage={70}
         gradientColors={isRevealed ? undefined : ["#A97CF8", "#F38CB8", "#FDCC92"]}
         onComplete={() => {
@@ -92,8 +127,8 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
           <Image
             src={country.flag_url || "/placeholder.svg"}
             alt={`Flag of ${country.name}`}
-            width={cardWidth!}
-            height={260}
+            width={dimensions.width}
+            height={dimensions.height}
             className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />
