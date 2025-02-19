@@ -18,6 +18,7 @@ import Achievements from "./Achievements"
 import InstructionsModal from "./InstructionsModal"
 import { motion } from "framer-motion"
 import AdPlaceholder from "./AdPlaceholder"
+import Image from "next/image"
 
 export default function Game() {
   const [gameMode, setGameMode] = useState<GameMode>("normal")
@@ -132,7 +133,15 @@ export default function Game() {
         <div className="max-w-[900px] mx-auto w-full">
           <Toaster richColors />
           <header className="flex flex-col sm:flex-row justify-between items-center mb-4">
-            <h1 className="text-3xl font-bold mb-4 sm:mb-0">Guess the Flag</h1>
+              <Image 
+                src={"/images/flagmaster.png"}
+                alt="Flag Master Logo"
+                width={315}
+                height={315}
+              />
+
+            {/* <h1 className="text-3xl font-bold mb-4 sm:mb-0">Guess the Flag</h1> */}
+            
             <div className="flex gap-4 items-end justify-center flex-wrap">
               <div className="flex-[1_1_100%] sm:flex-auto">
                 <label className="text-sm">Choose difficulty:</label>
