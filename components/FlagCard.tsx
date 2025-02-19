@@ -7,7 +7,6 @@ import type { GameState, GameMode } from "@/types/game"
 import type { Country } from "@/types/country"
 import Image from "next/image"
 import { ScratchToReveal } from "@/components/magicui/scratch-to-reveal";
-import { set } from "react-hook-form"
 
 interface FlagCardProps {
   country: Country,
@@ -37,14 +36,13 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
 
   useImperativeHandle(ref, () => ({
     resetInput: () => {
-      setAnswer("")
-      setRevealed(false)
-      setHint(null)
-      setAnswerStatus(null)
-      setIsRevealed(false)
-      setResetCounter(prev => prev + 1)
+      setAnswer("");
+      setHint(null);
+      setAnswerStatus(null);
+      setIsRevealed(false);
+      setResetCounter(prev => prev + 1);
     },
-  }))
+  }));
 
   const handleShowHint = () => {
     if (!hint) {
@@ -55,21 +53,29 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
   }
 
   const handleSubmit = () => {
+    if (gameState !== "playing" || !answer.trim()) return;
     const result = onAnswer(country.id, answer)
     setAnswerStatus(result ? "correct" : "incorrect")
   }
 
   return (
-    <div className="bg-card text-card-foreground rounded-lg shadow-md p-4" ref={refCard}>
+    <div 
+      className="bg-card rounded-lg shadow-md p-4" 
+      ref={refCard}
+    >
       <ScratchToReveal
         key={`${country.id}-${resetCounter}`} // Add unique key to reset the gradient
-        className={`w-full aspect-[3/2] mb-4 overflow-hidden ${isRevealed ? 'pointer-events-none' : ''}`}
+        className={`w-full aspect-[3/2] mb-4 overflow-hidden rounded-md ${isRevealed ? 'pointer-events-none' : ''}`}
         aria-label={`Scratch to reveal flag for ${country.name}`}
         width={cardWidth!}
         height={260}
         minScratchPercentage={70}
         gradientColors={isRevealed ? undefined : ["#A97CF8", "#F38CB8", "#FDCC92"]}
-        onComplete={() => setIsRevealed(true)}
+        onComplete={() => {
+          if (!isRevealed) {
+            setIsRevealed(true);
+          }
+        }}
       >
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
@@ -79,7 +85,7 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
           <Image
             src={country.flag_url || "/placeholder.svg"}
             alt={`Flag of ${country.name}`}
-            width={428}
+            width={cardWidth!}
             height={260}
             className="w-full h-full object-cover"
             onError={() => setImageError(true)}
@@ -111,8 +117,8 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
         </p>
       )}
       <div className="flex justify-between gap-2">
-        <Button onClick={handleSubmit} disabled={gameState !== "playing"} size="sm">
-          Submit
+        <Button onClick={handleSubmit} disabled={gameState !== "playing" || answerStatus === "correct"} size="sm">
+          Check your answer
         </Button>
         <Button onClick={handleShowHint} disabled={gameState !== "playing" || revealed} size="sm" variant="outline">
           Hint

@@ -133,16 +133,19 @@ export default function Game() {
           <Toaster richColors />
           <header className="flex flex-col sm:flex-row justify-between items-center mb-4">
             <h1 className="text-3xl font-bold mb-4 sm:mb-0">Guess the Flag</h1>
-            <div className="flex items-center gap-4">
-              <Select onValueChange={(value: GameMode) => setGameMode(value)} value={gameMode}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select game mode" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="normal">Normal</SelectItem>
-                  <SelectItem value="hard">Hard</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex gap-4 items-end">
+              <div>
+                <label className="text-muted-forefront text-sm">Choose difficulty:</label>
+                <Select onValueChange={(value: GameMode) => setGameMode(value)} value={gameMode}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select game mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="hard">Hard</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <Button onClick={startNewGame}>New Game</Button>
               <Button variant="outline" onClick={() => setIsInstructionsOpen(true)}>
                 Instructions
