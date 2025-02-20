@@ -3,6 +3,6 @@ interface RemainingFlagsProps {
 }
 
 export default function RemainingFlags({ count }: RemainingFlagsProps) {
-  return <div className="text-center mb-4">Remaining flags: {count}</div>
+  return <div className="text-center">Remaining flags: {count}</div>
 }
 

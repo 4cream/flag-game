@@ -22,7 +22,7 @@ export default function Timer({ duration, onTimeUp }: TimerProps) {
 
   return (
     <div className="mb-4">
-      <Progress value={(timeLeft / duration) * 100} className="w-full" />
+      <Progress value={(timeLeft / duration) * 100} className="w-full bg-red-500" />
       <p className="text-center mt-2">Time left: {timeLeft} seconds</p>
     </div>
   )

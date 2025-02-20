@@ -26,18 +26,18 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isMouseDown = useRef(false);
+  const hasInitialized = useRef(false);
   const isCompleteRef = useRef(false);
   const controls = useAnimation();
 
-  // Remover hasInitialized y siempre reinicializar el gradiente
+  // Inicializar el canvas solo una vez
   useEffect(() => {
+    if (hasInitialized.current) return;
+    
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (canvas && ctx) {
-      // Limpiar el canvas primero
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Reinicializar el gradiente
+      hasInitialized.current = true;
       ctx.fillStyle = "#ccc";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -46,11 +46,8 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
       gradient.addColorStop(1, gradientColors[2]);
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Resetear el estado de completado
-      isCompleteRef.current = false;
     }
-  }, [width, height, gradientColors]); // Agregar dependencias relevantes
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;

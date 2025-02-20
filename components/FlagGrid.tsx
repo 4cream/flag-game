@@ -24,7 +24,7 @@ const FlagGrid = forwardRef<{ resetInputs: () => void }, FlagGridProps>(
 
     return (
       <div
-        className={`grid gap-4 grid-cols-1 ${gameMode === "normal" ? "md:grid-cols-2" : " md:grid-cols-3"}`}
+        className={`grid gap-4 grid-cols-1 ${gameMode === "normal" ? "sm:grid-cols-2" : " sm:grid-cols-2 md:grid-cols-3"}`}
       >
         {countries.map((country, index) => (
           <FlagCard

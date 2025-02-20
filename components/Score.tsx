@@ -3,6 +3,6 @@ interface ScoreProps {
 }
 
 export default function Score({ score }: ScoreProps) {
-  return <div className="text-2xl font-bold text-center mb-4">Score: {score}</div>
+  return <div className="text-2xl font-bold text-center">Score: {score}</div>
 }
 

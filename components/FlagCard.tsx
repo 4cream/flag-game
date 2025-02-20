@@ -162,10 +162,20 @@ const FlagCard = forwardRef<{ resetInput: () => void }, FlagCardProps>(({ countr
         </p>
       )}
       <div className="flex justify-between gap-2">
-        <Button onClick={handleSubmit} disabled={gameState !== "playing" || answerStatus === "correct"} size="sm">
-          Check your answer
+        <Button 
+          onClick={handleSubmit} 
+          disabled={gameState !== "playing" || answerStatus === "correct"} 
+          size="sm"
+          className="bg-sky-400 hover:bg-s-600 text-white"
+          >
+          Check answer
         </Button>
-        <Button onClick={handleShowHint} disabled={gameState !== "playing" || revealed} size="sm" variant="outline">
+        <Button 
+          onClick={handleShowHint} 
+          disabled={gameState !== "playing" || revealed} 
+          size="sm" 
+          variant="outline"
+          >
           Hint
         </Button>
       </div>

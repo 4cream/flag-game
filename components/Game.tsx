@@ -19,6 +19,7 @@ import InstructionsModal from "./InstructionsModal"
 import { motion } from "framer-motion"
 import AdPlaceholder from "./AdPlaceholder"
 import Image from "next/image"
+import { Separator } from "@/components/ui/separator"
 
 export default function Game() {
   const [gameMode, setGameMode] = useState<GameMode>("normal")
@@ -124,7 +125,7 @@ export default function Game() {
   return (
     <motion.div
       role="main"
-      className="container mx-auto px-4 py-8"
+      className="container mx-auto px-4 py-8 bg-slate-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -136,13 +137,18 @@ export default function Game() {
               <Image 
                 src={"/images/flagmaster.png"}
                 alt="Flag Master Logo"
-                width={315}
-                height={315}
+                width={234}
+                height={234}
+                className="mix-blend-darken"
               />
 
-            {/* <h1 className="text-3xl font-bold mb-4 sm:mb-0">Guess the Flag</h1> */}
-            
-            <div className="flex gap-4 items-end justify-center flex-wrap">
+            <div className="flex flex-col gap-4 items-end justify-center flex-wrap">
+            <div className="flex justify-between w-full items-end">
+                <Score score={score} />
+                <RemainingFlags count={remainingFlags} />
+              </div>
+              <Separator />
+              <div className="flex gap-4 items-end flex-wrap justify-between">
               <div className="flex-[1_1_100%] sm:flex-auto">
                 <label className="text-sm">Choose difficulty:</label>
                 <Select onValueChange={(value: GameMode) => setGameMode(value)} value={gameMode}>
@@ -159,11 +165,12 @@ export default function Game() {
               <Button variant="outline" onClick={() => setIsInstructionsOpen(true)}>
                 Instructions
               </Button>
+              </div>
+
             </div>
           </header>
           {gameMode === "hard" && gameState === "playing" && <Timer duration={180} onTimeUp={endGame} />}
-          <Score score={score} />
-          <RemainingFlags count={remainingFlags} />
+
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <FlagGrid
               ref={flagGridRef}
